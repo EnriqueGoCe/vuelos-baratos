@@ -59,12 +59,18 @@ async function sendPriceAlert(user, alert, currentPrice, bestOffer) {
     </div>
   `;
 
-  await mail.sendMail({
-    from,
-    to: user.email,
-    subject: `✈️ ${alert.origin}→${alert.destination}: ${currentPrice}${alert.currency} (bajo tu objetivo de ${alert.target_price}${alert.currency})`,
-    html
-  });
+  try {
+    await mail.sendMail({
+      from,
+      to: user.email,
+      subject: `✈️ ${alert.origin}→${alert.destination}: ${currentPrice}${alert.currency} (bajo tu objetivo de ${alert.target_price}${alert.currency})`,
+      html
+    });
+    console.log(`Email de alerta enviado a ${user.email}`);
+  } catch (err) {
+    console.error(`Error enviando email a ${user.email}:`, err.message);
+    throw err;
+  }
 }
 
 module.exports = { sendPriceAlert };

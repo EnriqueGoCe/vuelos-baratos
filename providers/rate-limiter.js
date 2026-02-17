@@ -17,9 +17,12 @@ function getCurrentMonth() {
  * Verifica si un provider tiene cuota disponible
  */
 async function canMakeRequest(provider) {
+  if (!LIMITS[provider]) {
+    console.warn(`Provider desconocido: ${provider}`);
+    return false;
+  }
   const month = getCurrentMonth();
   const limit = LIMITS[provider];
-  if (!limit) return true;
 
   const [usage] = await ApiUsage.findOrCreate({
     where: { provider, month },

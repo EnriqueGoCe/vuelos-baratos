@@ -40,7 +40,7 @@ function mapResult(flight) {
   return {
     id: `kiwi-${flight.id}`,
     provider: 'kiwi',
-    price: flight.price,
+    price: parseFloat(flight.price) || 0,
     currency: flight.currency || 'EUR',
     outbound: mapRoutes(outboundRoutes),
     inbound: mapRoutes(inboundRoutes),

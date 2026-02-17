@@ -81,9 +81,9 @@ function deduplicateResults(results) {
  * Genera clave para deduplicacion basada en ruta y horario
  */
 function generateDeduplicationKey(offer) {
+  if (!offer.outbound || offer.outbound.length === 0) return offer.id;
   const outFirst = offer.outbound[0];
   const outLast = offer.outbound[offer.outbound.length - 1];
-  if (!outFirst || !outLast) return offer.id;
 
   // Redondear hora de salida a intervalos de 30 min para agrupar similares
   const depTime = new Date(outFirst.departure);

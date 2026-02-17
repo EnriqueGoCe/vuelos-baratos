@@ -116,11 +116,13 @@ async function searchFlexibleDates(origin, destination) {
   });
   const data = JSON.parse(response.body);
 
-  return (data.data || []).map(item => ({
-    date: item.departureDate,
-    price: parseFloat(item.price.total),
-    currency: item.price.currency
-  }));
+  return (data.data || [])
+    .filter(item => item.price?.total)
+    .map(item => ({
+      date: item.departureDate,
+      price: parseFloat(item.price.total),
+      currency: item.price.currency || 'EUR'
+    }));
 }
 
 module.exports = { search, searchFlexibleDates };
