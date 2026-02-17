@@ -1,0 +1,498 @@
+/* ============================================
+   Vuelos Baratos - Estilos de Componentes
+   ============================================ */
+
+/* ---- Flight Card ---- */
+.flight-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+
+.flight-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.flight-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flight-route {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.flight-time {
+  text-align: center;
+}
+
+.flight-time .time {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.flight-time .code {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.flight-line {
+  flex: 1;
+  position: relative;
+  height: 2px;
+  background: var(--gray-300);
+  min-width: 80px;
+}
+
+.flight-line::before {
+  content: attr(data-duration);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  white-space: nowrap;
+}
+
+.flight-line::after {
+  content: attr(data-stops);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flight-line .plane-icon {
+  position: absolute;
+  right: -4px;
+  top: -7px;
+  font-size: 0.9rem;
+}
+
+.flight-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.flight-airline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.flight-airline img {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.flight-provider {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+.flight-price {
+  text-align: right;
+  min-width: 120px;
+}
+
+.flight-price .amount {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.flight-price .currency {
+  font-size: 1rem;
+  color: var(--gray-500);
+  margin-left: 2px;
+}
+
+.flight-price .per-person {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+/* ---- Results toolbar ---- */
+.results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px 0;
+}
+
+.results-count {
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.results-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  border: 2px solid var(--gray-300);
+  border-radius: 20px;
+  background: var(--white);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #f0f4ff;
+}
+
+/* ---- Sort tabs ---- */
+.sort-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.sort-tab {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.sort-tab.active {
+  background: var(--white);
+  box-shadow: var(--shadow);
+  color: var(--primary);
+}
+
+/* ---- Alert Card ---- */
+.alert-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.alert-card .route-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 1.25rem;
+}
+
+.alert-card .alert-details h4 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.alert-card .alert-details .meta {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.alert-card .alert-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.alert-card .price-target {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.alert-card .current-price {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle .slider {
+  position: absolute;
+  inset: 0;
+  background: var(--gray-300);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle .slider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle input:checked + .slider {
+  background: var(--success);
+}
+
+.toggle input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* ---- Calendar Grid (Fechas flexibles) ---- */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.calendar-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  padding: 8px 0;
+}
+
+.calendar-day {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 8px;
+  text-align: center;
+  min-height: 72px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.calendar-day:hover {
+  border-color: var(--primary);
+}
+
+.calendar-day .day-number {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--dark);
+}
+
+.calendar-day .day-price {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.calendar-day.cheapest .day-price {
+  color: var(--success);
+}
+
+.calendar-day.medium .day-price {
+  color: var(--accent);
+}
+
+.calendar-day.expensive .day-price {
+  color: var(--danger);
+}
+
+.calendar-day.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.calendar-day.empty:hover {
+  border-color: transparent;
+}
+
+/* ---- Chart Container ---- */
+.chart-container {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.chart-container h3 {
+  margin-bottom: 16px;
+  color: var(--dark);
+}
+
+/* ---- Auth Forms ---- */
+.auth-container {
+  max-width: 440px;
+  margin: 40px auto;
+}
+
+.auth-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-card .subtitle {
+  text-align: center;
+  color: var(--gray-500);
+  margin-bottom: 24px;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  border: none;
+  background: var(--gray-100);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.auth-tab:first-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.auth-tab:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.auth-tab.active {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* ---- Modal ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 32px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* ---- Responsive overrides ---- */
+@media (max-width: 768px) {
+  .flight-card {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-price {
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .alert-card {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-grid {
+    font-size: 0.8rem;
+  }
+
+  .calendar-day {
+    min-height: 56px;
+    padding: 4px;
+  }
+
+  .results-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

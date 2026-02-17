@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vuelos Baratos - Busca y compara vuelos</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <span>&#9992;</span> Vuelos Baratos
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/" class="active">Buscar</a></li>
+      <li><a href="/flexible.html">Fechas flexibles</a></li>
+      <li><a href="/alerts.html">Alertas</a></li>
+    </ul>
+    <div class="navbar-auth" id="navbar-auth">
+      <a href="/login.html" class="btn btn-secondary btn-sm">Iniciar sesion</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Encuentra los vuelos mas baratos</h1>
+    <p>Comparamos precios en todas las aerolineas para que tu solo elijas</p>
+  </section>
+
+  <!-- Search Box -->
+  <div class="container">
+    <form class="search-box" id="search-form">
+      <div class="form-row">
+        <div class="form-group autocomplete-wrapper">
+          <label for="origin">Origen</label>
+          <input type="text" class="form-control" id="origin" placeholder="Ciudad o aeropuerto" autocomplete="off" required>
+          <input type="hidden" id="origin-code">
+          <div class="autocomplete-list" id="origin-list"></div>
+        </div>
+        <div class="form-group autocomplete-wrapper">
+          <label for="destination">Destino</label>
+          <input type="text" class="form-control" id="destination" placeholder="Ciudad o aeropuerto" autocomplete="off" required>
+          <input type="hidden" id="destination-code">
+          <div class="autocomplete-list" id="destination-list"></div>
+        </div>
+        <div class="form-group">
+          <label for="departure-date">Ida</label>
+          <input type="date" class="form-control" id="departure-date" required>
+        </div>
+        <div class="form-group">
+          <label for="return-date">Vuelta (opcional)</label>
+          <input type="date" class="form-control" id="return-date">
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button type="submit" class="btn btn-primary btn-lg" id="search-btn">
+            Buscar vuelos
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Popular Routes -->
+    <section class="mt-3">
+      <h2 class="mb-2">Rutas populares</h2>
+      <div class="form-row" id="popular-routes">
+        <div class="flight-card" style="cursor:pointer" onclick="quickSearch('MAD','BCN')">
+          <div class="flight-info">
+            <div class="flight-route">
+              <div class="flight-time"><div class="code">MAD</div><div class="city">Madrid</div></div>
+              <div class="flight-line"><span class="plane-icon">&#9992;</span></div>
+              <div class="flight-time"><div class="code">BCN</div><div class="city">Barcelona</div></div>
+            </div>
+          </div>
+          <div class="flight-price"><span class="per-person">desde</span></div>
+        </div>
+        <div class="flight-card" style="cursor:pointer" onclick="quickSearch('MAD','LHR')">
+          <div class="flight-info">
+            <div class="flight-route">
+              <div class="flight-time"><div class="code">MAD</div><div class="city">Madrid</div></div>
+              <div class="flight-line"><span class="plane-icon">&#9992;</span></div>
+              <div class="flight-time"><div class="code">LHR</div><div class="city">Londres</div></div>
+            </div>
+          </div>
+          <div class="flight-price"><span class="per-person">desde</span></div>
+        </div>
+        <div class="flight-card" style="cursor:pointer" onclick="quickSearch('BCN','FCO')">
+          <div class="flight-info">
+            <div class="flight-route">
+              <div class="flight-time"><div class="code">BCN</div><div class="city">Barcelona</div></div>
+              <div class="flight-line"><span class="plane-icon">&#9992;</span></div>
+              <div class="flight-time"><div class="code">FCO</div><div class="city">Roma</div></div>
+            </div>
+          </div>
+          <div class="flight-price"><span class="per-person">desde</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Vuelos Baratos. Todos los precios son orientativos.</p>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/autocomplete.js"></script>
+  <script src="/js/search.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesion - Vuelos Baratos</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <span>&#9992;</span> Vuelos Baratos
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/">Buscar</a></li>
+      <li><a href="/flexible.html">Fechas flexibles</a></li>
+      <li><a href="/alerts.html">Alertas</a></li>
+    </ul>
+    <div class="navbar-auth" id="navbar-auth"></div>
+  </nav>
+
+  <div class="container">
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Bienvenido</h2>
+        <p class="subtitle">Accede a tus alertas de precio y mas</p>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Iniciar sesion</button>
+          <button class="auth-tab" data-tab="register">Registrarse</button>
+        </div>
+
+        <div id="auth-message"></div>
+
+        <!-- Login Form -->
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" class="form-control" id="login-email" placeholder="tu@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Contrasena</label>
+            <input type="password" class="form-control" id="login-password" placeholder="Tu contrasena" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Iniciar sesion</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="hidden">
+          <div class="form-group">
+            <label for="register-name">Nombre</label>
+            <input type="text" class="form-control" id="register-name" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="register-email">Email</label>
+            <input type="email" class="form-control" id="register-email" placeholder="tu@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="register-password">Contrasena</label>
+            <input type="password" class="form-control" id="register-password" placeholder="Minimo 6 caracteres" minlength="6" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Crear cuenta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Vuelos Baratos. Todos los precios son orientativos.</p>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // If already logged in, redirect
+      if (Auth.isLoggedIn()) {
+        window.location.href = '/';
+        return;
+      }
+
+      // Tab switching
+      document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          const isLogin = tab.dataset.tab === 'login';
+          document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+          document.getElementById('register-form').classList.toggle('hidden', isLogin);
+          document.getElementById('auth-message').innerHTML = '';
+        });
+      });
+
+      function showMessage(msg, type) {
+        document.getElementById('auth-message').innerHTML =
+          `<div class="alert alert-${type} mb-2">${msg}</div>`;
+      }
+
+      // Login
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+          await Auth.login(email, password);
+          const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+          window.location.href = redirect;
+        } catch (err) {
+          showMessage(err.message || 'Error al iniciar sesion', 'error');
+        }
+      });
+
+      // Register
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+
+        try {
+          await Auth.register(name, email, password);
+          window.location.href = '/';
+        } catch (err) {
+          showMessage(err.message || 'Error al registrar', 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fechas Flexibles - Vuelos Baratos</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <span>&#9992;</span> Vuelos Baratos
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/">Buscar</a></li>
+      <li><a href="/flexible.html" class="active">Fechas flexibles</a></li>
+      <li><a href="/alerts.html">Alertas</a></li>
+    </ul>
+    <div class="navbar-auth" id="navbar-auth">
+      <a href="/login.html" class="btn btn-secondary btn-sm">Iniciar sesion</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Fechas Flexibles</h2>
+      <p style="color:var(--gray-500);">Encuentra el dia mas barato para volar</p>
+    </div>
+
+    <!-- Search form -->
+    <div class="search-box" style="margin-top:0;">
+      <form id="flexible-form">
+        <div class="form-row" style="grid-template-columns: 1fr 1fr auto;">
+          <div class="form-group autocomplete-wrapper">
+            <label for="flex-origin">Origen</label>
+            <input type="text" class="form-control" id="flex-origin" placeholder="Ciudad o aeropuerto" autocomplete="off" required>
+            <input type="hidden" id="flex-origin-code">
+            <div class="autocomplete-list" id="flex-origin-list"></div>
+          </div>
+          <div class="form-group autocomplete-wrapper">
+            <label for="flex-destination">Destino</label>
+            <input type="text" class="form-control" id="flex-destination" placeholder="Ciudad o aeropuerto" autocomplete="off" required>
+            <input type="hidden" id="flex-destination-code">
+            <div class="autocomplete-list" id="flex-destination-list"></div>
+          </div>
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary btn-lg">Buscar fechas</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading -->
+    <div id="flex-loading" class="loading-overlay hidden">
+      <div class="spinner spinner-lg"></div>
+      <span>Buscando precios por fecha...</span>
+    </div>
+
+    <!-- Calendar -->
+    <div id="flex-results" class="hidden mt-3">
+      <div class="chart-container">
+        <h3>Precios por dia</h3>
+        <canvas id="flex-chart" height="300"></canvas>
+      </div>
+
+      <h3 class="mb-2">Calendario de precios</h3>
+      <div id="calendar-nav" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <button class="btn btn-secondary btn-sm" id="prev-month">&larr; Anterior</button>
+        <h3 id="calendar-month"></h3>
+        <button class="btn btn-secondary btn-sm" id="next-month">Siguiente &rarr;</button>
+      </div>
+      <div class="calendar-grid" id="calendar-grid">
+        <div class="calendar-header">Lun</div>
+        <div class="calendar-header">Mar</div>
+        <div class="calendar-header">Mie</div>
+        <div class="calendar-header">Jue</div>
+        <div class="calendar-header">Vie</div>
+        <div class="calendar-header">Sab</div>
+        <div class="calendar-header">Dom</div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="flex-empty" class="empty-state hidden">
+      <div class="icon">&#128197;</div>
+      <h3>No hay datos de fechas flexibles</h3>
+      <p>Selecciona una ruta para ver los precios por dia</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Vuelos Baratos. Todos los precios son orientativos.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/autocomplete.js"></script>
+  <script src="/js/charts.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initAutocomplete('flex-origin', 'flex-origin-code', 'flex-origin-list');
+      initAutocomplete('flex-destination', 'flex-destination-code', 'flex-destination-list');
+
+      let flexibleDates = [];
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+
+      document.getElementById('flexible-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const origin = document.getElementById('flex-origin-code').value;
+        const destination = document.getElementById('flex-destination-code').value;
+
+        if (!origin || !destination) {
+          alert('Selecciona origen y destino de la lista');
+          return;
+        }
+
+        document.getElementById('flex-loading').classList.remove('hidden');
+        document.getElementById('flex-results').classList.add('hidden');
+        document.getElementById('flex-empty').classList.add('hidden');
+
+        try {
+          const data = await API.getFlexibleDates(origin, destination);
+          flexibleDates = data.dates || [];
+
+          if (flexibleDates.length === 0) {
+            document.getElementById('flex-empty').classList.remove('hidden');
+            document.getElementById('flex-loading').classList.add('hidden');
+            return;
+          }
+
+          // Set month to first available date
+          const firstDate = new Date(flexibleDates[0].date);
+          currentMonth = firstDate.getMonth();
+          currentYear = firstDate.getFullYear();
+
+          renderFlexChart(flexibleDates);
+          renderCalendar(flexibleDates, currentYear, currentMonth, origin, destination);
+          document.getElementById('flex-results').classList.remove('hidden');
+        } catch (err) {
+          document.getElementById('flex-empty').classList.remove('hidden');
+        } finally {
+          document.getElementById('flex-loading').classList.add('hidden');
+        }
+      });
+
+      document.getElementById('prev-month').addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        const origin = document.getElementById('flex-origin-code').value;
+        const destination = document.getElementById('flex-destination-code').value;
+        renderCalendar(flexibleDates, currentYear, currentMonth, origin, destination);
+      });
+
+      document.getElementById('next-month').addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        const origin = document.getElementById('flex-origin-code').value;
+        const destination = document.getElementById('flex-destination-code').value;
+        renderCalendar(flexibleDates, currentYear, currentMonth, origin, destination);
+      });
+
+      function renderCalendar(dates, year, month, origin, dest) {
+        const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        document.getElementById('calendar-month').textContent = `${monthNames[month]} ${year}`;
+
+        const grid = document.getElementById('calendar-grid');
+        // Remove day cells, keep headers
+        const headers = grid.querySelectorAll('.calendar-header');
+        grid.innerHTML = '';
+        headers.forEach(h => grid.appendChild(h));
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const offset = firstDay === 0 ? 6 : firstDay - 1; // Monday-based
+
+        // Price range for coloring
+        const monthDates = dates.filter(d => {
+          const dd = new Date(d.date);
+          return dd.getMonth() === month && dd.getFullYear() === year;
+        });
+        const prices = monthDates.map(d => d.price);
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        const threshold1 = minPrice + (maxPrice - minPrice) * 0.33;
+        const threshold2 = minPrice + (maxPrice - minPrice) * 0.66;
+
+        // Empty cells before first day
+        for (let i = 0; i < offset; i++) {
+          const cell = document.createElement('div');
+          cell.className = 'calendar-day empty';
+          grid.appendChild(cell);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const found = dates.find(d => d.date === dateStr);
+
+          const cell = document.createElement('div');
+          cell.className = 'calendar-day';
+          cell.innerHTML = `<div class="day-number">${day}</div>`;
+
+          if (found) {
+            let cls = 'expensive';
+            if (found.price <= threshold1) cls = 'cheapest';
+            else if (found.price <= threshold2) cls = 'medium';
+            cell.classList.add(cls);
+            cell.innerHTML += `<div class="day-price">${found.price}${found.currency === 'EUR' ? '\u20AC' : found.currency}</div>`;
+            cell.style.cursor = 'pointer';
+            cell.addEventListener('click', () => {
+              window.location.href = `/search.html?origin=${origin}&destination=${dest}&departureDate=${dateStr}`;
+            });
+          }
+
+          grid.appendChild(cell);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

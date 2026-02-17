@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Alertas - Vuelos Baratos</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <span>&#9992;</span> Vuelos Baratos
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/">Buscar</a></li>
+      <li><a href="/flexible.html">Fechas flexibles</a></li>
+      <li><a href="/alerts.html" class="active">Alertas</a></li>
+    </ul>
+    <div class="navbar-auth" id="navbar-auth">
+      <a href="/login.html" class="btn btn-secondary btn-sm">Iniciar sesion</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h2>Mis Alertas de Precio</h2>
+        <p style="color:var(--gray-500);">Recibe una notificacion cuando el precio baje</p>
+      </div>
+    </div>
+
+    <!-- Login required message -->
+    <div id="auth-required" class="hidden">
+      <div class="empty-state">
+        <div class="icon">&#128274;</div>
+        <h3>Inicia sesion para ver tus alertas</h3>
+        <p class="mb-2">Necesitas una cuenta para crear y gestionar alertas de precio</p>
+        <a href="/login.html" class="btn btn-primary">Iniciar sesion</a>
+      </div>
+    </div>
+
+    <!-- Alerts list -->
+    <div id="alerts-loading" class="loading-overlay hidden">
+      <div class="spinner spinner-lg"></div>
+      <span>Cargando alertas...</span>
+    </div>
+
+    <div id="alerts-empty" class="empty-state hidden">
+      <div class="icon">&#128276;</div>
+      <h3>No tienes alertas activas</h3>
+      <p class="mb-2">Busca un vuelo y crea una alerta para recibir notificaciones cuando baje el precio</p>
+      <a href="/" class="btn btn-primary">Buscar vuelos</a>
+    </div>
+
+    <div id="alerts-list"></div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Vuelos Baratos. Todos los precios son orientativos.</p>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/alerts.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
