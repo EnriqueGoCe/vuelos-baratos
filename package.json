@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed-airports.js",
+    "import:airports": "node scripts/import-airports-csv.js",
     "test": "jest --coverage"
   },
   "dependencies": {

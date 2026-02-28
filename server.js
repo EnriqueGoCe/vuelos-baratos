@@ -3,9 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const fs = require('fs');
 const path = require('path');
 
-const { sequelize } = require('./models');
+const { sequelize, Airport } = require('./models');
 const authRoutes = require('./routes/auth.routes');
 const searchRoutes = require('./routes/search.routes');
 const alertsRoutes = require('./routes/alerts.routes');
@@ -14,9 +15,16 @@ const flexibleRoutes = require('./routes/flexible.routes');
 const airportsRoutes = require('./routes/airports.routes');
 const { startAlertJob } = require('./jobs/check-alerts.job');
 const { startCleanupJob } = require('./jobs/cleanup-cache.job');
+const { importCsv } = require('./scripts/import-airports-csv');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// En produccion suele haber reverse proxy (Hostinger/Nginx/Cloudflare).
+// Sin esto, rate-limit puede identificar a muchos usuarios con la misma IP.
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 // Middlewares globales
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -68,6 +76,17 @@ async function start() {
 
     await sequelize.sync({ alter: process.env.NODE_ENV === 'development' });
     console.log('Modelos sincronizados');
+
+    const airportsCount = await Airport.count();
+    if (airportsCount === 0) {
+      const csvPath = path.join(__dirname, 'data', 'airports.csv');
+      if (fs.existsSync(csvPath)) {
+        console.log('Tabla airports vacia, importando data/airports.csv...');
+        await importCsv(csvPath);
+      } else {
+        console.warn('Tabla airports vacia y no existe data/airports.csv');
+      }
+    }
 
     // Iniciar jobs programados
     startAlertJob();

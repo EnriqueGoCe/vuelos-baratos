@@ -9,24 +9,36 @@ function initAutocomplete(inputId, hiddenId, listId) {
 
   let highlightIndex = -1;
   let items = [];
+  let statusMessage = '';
 
   const search = Utils.debounce(async (query) => {
     if (query.length < 2) {
+      statusMessage = '';
       list.classList.remove('active');
       return;
     }
 
     try {
       items = await API.searchAirports(query);
+      statusMessage = items.length === 0 ? 'Sin resultados' : '';
       renderList();
-    } catch {
-      list.classList.remove('active');
+    } catch (error) {
+      items = [];
+      statusMessage = 'No se pudieron cargar sugerencias';
+      console.error('Autocomplete error:', error);
+      renderList();
     }
   }, 250);
 
   function renderList() {
-    if (items.length === 0) {
+    if (items.length === 0 && !statusMessage) {
       list.classList.remove('active');
+      return;
+    }
+
+    if (items.length === 0 && statusMessage) {
+      list.innerHTML = `<div class="autocomplete-item">${Utils.escapeHtml(statusMessage)}</div>`;
+      list.classList.add('active');
       return;
     }
 
@@ -61,6 +73,7 @@ function initAutocomplete(inputId, hiddenId, listId) {
   input.addEventListener('input', (e) => {
     hidden.value = '';
     highlightIndex = -1;
+    statusMessage = '';
     search(e.target.value);
   });
 

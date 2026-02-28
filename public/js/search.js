@@ -2,27 +2,27 @@
  * Logica del formulario de busqueda (index.html)
  */
 function initSearchForm() {
-  const form = document.getElementById('search-form');
+  const form = document.getElementById("search-form");
   if (!form) return;
 
   // Init autocomplete
-  initAutocomplete('origin', 'origin-code', 'origin-list');
-  initAutocomplete('destination', 'destination-code', 'destination-list');
+  initAutocomplete("origin", "origin-code", "origin-list");
+  initAutocomplete("destination", "destination-code", "destination-list");
 
   // Set min dates
-  Utils.setMinDate('departure-date');
-  Utils.setMinDate('return-date');
+  Utils.setMinDate("departure-date");
+  Utils.setMinDate("return-date");
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const origin = document.getElementById('origin-code').value;
-    const destination = document.getElementById('destination-code').value;
-    const departureDate = document.getElementById('departure-date').value;
-    const returnDate = document.getElementById('return-date').value;
+    const origin = document.getElementById("origin-code").value;
+    const destination = document.getElementById("destination-code").value;
+    const departureDate = document.getElementById("departure-date").value;
+    const returnDate = document.getElementById("return-date").value;
 
     if (!origin || !destination) {
-      alert('Selecciona origen y destino de la lista de sugerencias');
+      alert("Selecciona origen y destino de la lista de sugerencias");
       return;
     }
 
@@ -30,11 +30,30 @@ function initSearchForm() {
       origin,
       destination,
       departureDate,
-      returnDate: returnDate || undefined
+      returnDate: returnDate || undefined,
     });
 
     window.location.href = `/search.html?${params}`;
   });
+}
+
+function resolveAirportCode(inputId, hiddenId) {
+  const input = document.getElementById(inputId);
+  const hidden = document.getElementById(hiddenId);
+  if (!input || !hidden) return "";
+
+  if (hidden.value) return hidden.value;
+
+  const raw = input.value.trim();
+  // Fallback for cases where the hidden input was not synced.
+  const fromParenthesis = raw.match(/\(([A-Za-z]{3})\)\s*$/);
+  const fromCode = raw.match(/^([A-Za-z]{3})$/);
+  const parsedCode =
+    (fromParenthesis && fromParenthesis[1]) || (fromCode && fromCode[1]) || "";
+  const parsed = parsedCode.toUpperCase();
+
+  if (parsed) hidden.value = parsed;
+  return parsed;
 }
 
 /**
